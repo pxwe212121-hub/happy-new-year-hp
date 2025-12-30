@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026 🐼✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+body{overflow:hidden;background:#000;position:relative;color:#fff;}
+canvas{position:fixed;top:0;left:0;z-index:-1;}
+
+/* Pages */
+.page{display:none;height:100vh;width:100vw;text-align:center;padding:40px 20px;position:relative;transition:all 1s ease;}
+.page.active{display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:1;transform:translateY(0);}
+.page.prev{opacity:0;transform:translateY(50px);}
+h1{font-size:36px;margin-bottom:15px;text-shadow:0 0 15px #ffcc70;}
+p{font-size:18px;line-height:1.7;max-width:700px;white-space:pre-line;text-shadow:0 0 8px #fff;}
+button{margin-top:25px;padding:14px 32px;border:none;border-radius:30px;background:#ffcc70;color:#000;font-size:18px;cursor:pointer;box-shadow:0 0 10px #ffcc70;}
+
+/* Panda animation */
+.panda{font-size:80px;margin:20px 0;animation:bounce 1s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);}}
+.dance{font-size:80px;animation:danceMove 0.8s infinite;}
+@keyframes danceMove{0%{transform:translateX(0) rotate(0deg);}25%{transform:translateX(10px) rotate(15deg);}50%{transform:translateX(-10px) rotate(-15deg);}75%{transform:translateX(10px) rotate(15deg);}100%{transform:translateX(0) rotate(0deg);}}
+
+/* Typing effect */
+.typing{border-right:2px solid #fff;}
+
+/* Scrollable page */
+.scroll{overflow-y:auto;padding-bottom:40px;}
+
+/* Sparkles & Confetti */
+.sparkle{position:fixed;font-size:24px;animation:fall linear forwards;pointer-events:none;}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+
+/* Fireworks */
+.firework{position:absolute;border-radius:50%;opacity:0.8;}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- PAGE 1 -->
+<div class="page active" id="p1">
+  <h1>✨ Happy New Year 2026! ✨</h1>
+  <p>Tap and feel something magical…</p>
+  <button onclick="nextPage(2);startSparkles()">Start</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+  <h1>Welcome 2026 🎉</h1>
+  <p class="typing" id="text2"></p>
+  <button onclick="nextPage(3)">Next</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+  <div class="panda">🐼</div>
+  <p class="typing" id="text3"></p>
+  <button onclick="nextPage(4)">Next</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page scroll" id="p4">
+  <h1>💭 Special Feelings</h1>
+  <p class="typing" id="text4"></p>
+  <button onclick="nextPage(5)">Next</button>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" id="p5">
+  <h1>📝 Shayari</h1>
+  <p class="typing" id="text5"></p>
+  <button onclick="nextPage(6)">Next</button>
+</div>
+
+<!-- PAGE 6 (TUM HI HO SONG PAGE) -->
+<div class="page" id="p6">
+  <div class="panda bounce">🐼🎵</div>
+  <h1>Feel the Vibe…</h1>
+  <p>Click the icon below to play 🎶</p>
+  <button id="playBtn" style="font-size:36px;padding:10px 20px;">▶️</button>
+  <br>
+  <button onclick="nextPage(7)" style="margin-top:20px;">Next</button>
+</div>
+
+<audio id="music">
+  <source src="tum_hi_ho.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PAGE 7 (THANK YOU PANDA PAGE) -->
+<div class="page scroll" id="p7">
+  <div class="panda" style="text-shadow:0 0 20px #ffcc70;">🐼🤍</div>
+  <h1>Thank You</h1>
+  <p class="typing" id="text6"></p>
+  <button onclick="nextPage(8)">Next</button>
+</div>
+
+<!-- PAGE 8 (FINAL FUNNY DANCE) -->
+<div class="page" id="p8">
+  <div class="panda dance">🐼💃</div>
+  <h1>Welcome 2026 🎆</h1>
+  <p>Keep smiling… Panda is dancing for you 😄</p>
+  <button onclick="nextPage(9)">Next</button>
+</div>
+
+<!-- PAGE 9 (SURPRISE PAGE) -->
+<div class="page" id="p9">
+  <h1>🎉 Happy 2026 Again! 🎉</h1>
+  <p>Floating pandas, sparkles and endless happiness for you 🐼✨</p>
+  <button onclick="share()"> Final </button>
+</div>
+
+<script>
+// Canvas stars background
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+for(let i=0;i<200;i++){
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2+1,dx:(Math.random()-0.5)/2,dy:(Math.random()-0.5)/2});
+}
+function animateStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+    ctx.fillStyle='white';
+    ctx.fill();
+    s.x+=s.dx;
+    s.y+=s.dy;
+    if(s.x<0)s.x=canvas.width;if(s.x>canvas.width)s.x=0;
+    if(s.y<0)s.y=canvas.height;if(s.y>canvas.height)s.y=0;
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+
+// Pages navigation
+const pages=document.querySelectorAll('.page');
+function nextPage(n){
+  pages.forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+}
+
+// Sparkles falling
+function startSparkles(){
+  setInterval(()=>{
+    let f=document.createElement('div');
+    f.className='sparkle';
+    f.innerHTML='✨';
+    f.style.left=Math.random()*100+'vw';
+    f.style.animationDuration=(2+Math.random()*2)+'s';
+    f.style.fontSize=(10+Math.random()*24)+'px';
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),4000);
+  },150);
+}
+
+// Fireworks effect
+function fireworks(){
+  setInterval(()=>{
+    let fw=document.createElement('div');
+    fw.className='firework';
+    let size=Math.random()*6+4;
+    fw.style.width=fw.style.height=size+'px';
+    fw.style.background='hsl('+Math.random()*360+',100%,50%)';
+    fw.style.left=Math.random()*window.innerWidth+'px';
+    fw.style.top=Math.random()*window.innerHeight+'px';
+    document.body.appendChild(fw);
+    setTimeout(()=>fw.remove(),800);
+  },300);
+}
+fireworks();
+
+// Play/Pause for Tum Hi Ho
+const music = document.getElementById('music');
+const playBtn = document.getElementById('playBtn');
+playBtn.addEventListener('click', () => {
+    if (music.paused) {
+        music.play();
+        playBtn.textContent = '⏸️';
+    } else {
+        music.pause();
+        playBtn.textContent = '▶️';
+    }
+});
+
+// Typing effect
+function typeText(id,text,speed=40){
+  let i=0;
+  let el=document.getElementById(id);
+  el.innerHTML='';
+  let interval=setInterval(()=>{
+      el.innerHTML+=text.charAt(i);
+      i++;
+      if(i>=text.length) clearInterval(interval);
+  },speed);
+}
+
+// Page texts
+typeText('text2', 'New Year 2026…\nNew hopes…\nAnd some old, very special memories…');
+typeText('text3', 'I want to share something straight from my heart…');
+typeText('text4', 'The past 4 years were not just time, they were 35,040 hours, 2,102,400 minutes, and 126,144,000 seconds in which you were with me every moment 🫶\nI made mistakes, sometimes said too much in anger 😅, but you never left me alone.\nWhen you are around, everything feels easier and more personal.\nIf it were anyone else, maybe they would have left long ago, but you didn’t — and that is the most beautiful truth of my life.\nAnd in this New Year 2026, I just wish that these moments with you become even more memorable 🫶');
+typeText('text5', 'Some words were left unsaid,\nSome feelings misunderstood…\nBut those who stayed,\nThey became the most special 😊');
+typeText('text6', 'In the last instance,\nI would like to say that you always stay with me\nand thank you for everything that is to come.\n\nIn the coming years,\nplease stay with me,\nPanda 🐼🤍');
+
+// WhatsApp share
+function share(){
+  let text="🐼✨ A Special New Year 2026 Message ✨🐼\nFeel it once 🤍";
+  window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+location.href));
+}
+</script>
+</body>
+</html>
